@@ -1,9 +1,23 @@
 package user
 
-import "gorm.io/gorm"
+import (
+	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
+)
 
 type User struct {
 	gorm.Model
 	Email    string `gorm:"unique;not null"`
 	Password string
+}
+
+func (u *User) BeforeCreate() (err error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(u.Password), 14)
+	u.Password = string(bytes)
+	return
+}
+
+func (u *User) CheckPassword(password string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(password))
+	return err == nil
 }
