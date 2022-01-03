@@ -19,6 +19,7 @@ func SignUp(c *gin.Context) {
 
 	user := user.User{Email: c.PostForm("email"), Password: c.PostForm("password1")}
 	db_con := db.GetDB()
+	fmt.Println("CREATION")
 	result := db_con.Create(&user)
 
 	if result.Error != nil {
