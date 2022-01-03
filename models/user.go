@@ -1,7 +1,6 @@
 package user
 
 import (
-	"fmt"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -14,8 +13,6 @@ type User struct {
 
 func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(u.Password), 14)
-	fmt.Println(bytes)
-	fmt.Println("bytesbytesbytesbytesbytesbytesbytesbytesbytesbytesbytesbytesbytesbytes")
 	u.Password = string(bytes)
 	return
 }

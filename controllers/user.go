@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"go-conf/config"
 	user "go-conf/models"
@@ -19,11 +18,9 @@ func SignUp(c *gin.Context) {
 
 	user := user.User{Email: c.PostForm("email"), Password: c.PostForm("password1")}
 	db_con := db.GetDB()
-	fmt.Println("CREATION")
 	result := db_con.Create(&user)
 
 	if result.Error != nil {
-		fmt.Println(result.Error)
 		c.JSON(422, gin.H{"error": result.Error})
 		return
 	}

@@ -11,7 +11,7 @@ import (
 	"go-conf/validators"
 )
 
-var identityKey = "ID"
+var identityKey = "Email"
 var db_con = db.GetDB()
 
 func AuthMiddleware() *jwt.GinJWTMiddleware {
@@ -40,19 +40,17 @@ func AuthMiddleware() *jwt.GinJWTMiddleware {
 			if err := c.ShouldBind(&loginVals); err != nil {
 				return "", jwt.ErrMissingLoginValues
 			}
-			//userID := loginVals.Email
-			//password := loginVals.Password
 			var us user.User
 			err := db_con.First(&us, "email = ?", loginVals.Email)
 
 			if err.Error == nil && us.CheckPassword(loginVals.Password) {
-				return us, nil
+				return &us, nil
 			}
 
 			return nil, jwt.ErrFailedAuthentication
 		},
 		Authorizator: func(data interface{}, c *gin.Context) bool {
-			if v, ok := data.(*user.User); ok && v.Email == "admin" {
+			if _, ok := data.(*user.User); ok { //in v stores user identity (email)
 				return true
 			}
 
@@ -72,7 +70,7 @@ func AuthMiddleware() *jwt.GinJWTMiddleware {
 		// - "query:<name>"
 		// - "cookie:<name>"
 		// - "param:<name>"
-		TokenLookup: "header: Authorization, query: token, cookie: jwt",
+		TokenLookup: "header: Authorization",
 		// TokenLookup: "query:token",
 		// TokenLookup: "cookie:token",
 
