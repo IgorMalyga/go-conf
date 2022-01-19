@@ -22,7 +22,7 @@ func AuthMiddleware() *jwt.GinJWTMiddleware {
 		MaxRefresh:  time.Hour,
 		IdentityKey: identityKey,
 		PayloadFunc: func(data interface{}) jwt.MapClaims {
-			if v, ok := data.(*user.User); ok {
+			if v, ok := data.(*models.User); ok {
 				return jwt.MapClaims{
 					identityKey: v.Email,
 				}
@@ -31,7 +31,7 @@ func AuthMiddleware() *jwt.GinJWTMiddleware {
 		},
 		IdentityHandler: func(c *gin.Context) interface{} {
 			claims := jwt.ExtractClaims(c)
-			return &user.User{
+			return &models.User{
 				Email: claims[identityKey].(string),
 			}
 		},
@@ -40,7 +40,7 @@ func AuthMiddleware() *jwt.GinJWTMiddleware {
 			if err := c.ShouldBind(&loginVals); err != nil {
 				return "", jwt.ErrMissingLoginValues
 			}
-			var us user.User
+			var us models.User
 			err := db_con.First(&us, "email = ?", loginVals.Email)
 
 			if err.Error == nil && us.CheckPassword(loginVals.Password) {
@@ -50,7 +50,7 @@ func AuthMiddleware() *jwt.GinJWTMiddleware {
 			return nil, jwt.ErrFailedAuthentication
 		},
 		Authorizator: func(data interface{}, c *gin.Context) bool {
-			if _, ok := data.(*user.User); ok { //in v stores user identity (email)
+			if _, ok := data.(*models.User); ok { //in v stores user identity (email)
 				return true
 			}
 

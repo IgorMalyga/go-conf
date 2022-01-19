@@ -23,5 +23,8 @@ func GetDB() *gorm.DB {
 }
 
 func Migrate() {
-	db_connection.AutoMigrate(&user.User{})
+	db_connection.AutoMigrate(&models.User{})
+	db_connection.AutoMigrate(&models.Workspace{})
+	db_connection.AutoMigrate(&models.Article{})
+	db_connection.AutoMigrate(&models.Tag{})
 }
