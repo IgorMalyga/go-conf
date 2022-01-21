@@ -8,7 +8,7 @@ import (
 type User struct {
 	gorm.Model
 	Email    string `gorm:"unique;not null"`
-	Password string
+	Password string `json:"-"`
 }
 
 func (u *User) BeforeCreate(tx *gorm.DB) (err error) {

@@ -4,6 +4,7 @@ import "gorm.io/gorm"
 
 type Workspace struct {
 	gorm.Model
-	CreatedBy User
-	Members   []User
+	CreatedByID uint
+	CreatedBy   User `json:"createdBy" binding:"required" gorm:"foreignkey:CreatedByID"`
+	Name        string
 }

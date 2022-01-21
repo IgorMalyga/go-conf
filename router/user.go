@@ -16,13 +16,13 @@ func UserRouter() *gin.Engine {
 	router.Use(middleware.AuthMiddleware().MiddlewareFunc())
 	router.Use(middleware.RequestUser())
 	router.GET("/ping", func(c *gin.Context) {
-
 		us := c.MustGet("User").(user.User)
 		fmt.Printf("User: %v", us)
 		c.JSON(200, gin.H{
 			"message": "pong",
 		})
 	})
+	router.POST("/create-workspace/", controllers.CreateWorkspace)
 
 	return router
 }
