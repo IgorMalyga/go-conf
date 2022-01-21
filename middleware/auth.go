@@ -14,6 +14,22 @@ import (
 var identityKey = "Email"
 var db_con = db.GetDB()
 
+func RequestUser() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		//user, _ := c.Get(identityKey)
+		claims := jwt.ExtractClaims(c)
+		var user models.User
+		err := db_con.First(&user, "email = ?", claims["Email"])
+
+		if err.Error == nil {
+			c.Set("User", user)
+		} else {
+			c.Set("user", nil)
+		}
+
+	}
+}
+
 func AuthMiddleware() *jwt.GinJWTMiddleware {
 	authMiddleware, _ := jwt.New(&jwt.GinJWTMiddleware{
 		Realm:       "test zone",
